@@ -1,74 +1,10 @@
- <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#0b0f1a"/>
-      <stop offset="1" stop-color="#1a1040"/>
-    </linearGradient>
-    <linearGradient id="neon" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#00f5d4"/>
-      <stop offset="0.5" stop-color="#7b5cff"/>
-      <stop offset="1" stop-color="#ff4d9d"/>
-    </linearGradient>
-    <filter id="glow" x="-20%" y="-30%" width="140%" height="160%">
-      <feGaussianBlur stdDeviation="4" result="b"/>
-      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-      <path d="M40 0H0V40" fill="none" stroke="#ffffff" stroke-opacity="0.05"/>
-    </pattern>
-  </defs>
-
-  <style>
-    .beat { stroke-dasharray: 1700; stroke-dashoffset: 1700; animation: draw 3.4s linear infinite; }
-    @keyframes draw {
-      0%   { stroke-dashoffset: 1700; opacity: 1; }
-      70%  { stroke-dashoffset: 0;    opacity: 1; }
-      100% { stroke-dashoffset: 0;    opacity: 0; }
-    }
-    .ring { transform-box: fill-box; transform-origin: center; animation: ring 2.2s ease-out infinite; }
-    @keyframes ring {
-      0%   { transform: scale(0.6); opacity: 0.9; }
-      100% { transform: scale(2.2); opacity: 0; }
-    }
-    .lock { transform-box: fill-box; transform-origin: center; animation: pulse 2.2s ease-in-out infinite; }
-    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.12); } }
-    .title { font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-weight: 800; font-size: 86px; letter-spacing: 2px; }
-    .tag { font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-size: 21px; letter-spacing: 5px; fill: #b8c0ff; }
-    .fade { animation: fade 3s ease-in-out infinite; }
-    @keyframes fade { 0%,100% { opacity: 0.15; } 50% { opacity: 0.9; } }
-  </style>
-
-  <rect width="1200" height="320" rx="18" fill="url(#bg)"/>
-  <rect width="1200" height="320" rx="18" fill="url(#grid)"/>
-
-  <!-- floating particles -->
-  <circle class="fade" cx="120" cy="70"  r="3" fill="#00f5d4"/>
-  <circle class="fade" cx="1060" cy="95" r="3" fill="#ff4d9d" style="animation-delay:.8s"/>
-  <circle class="fade" cx="300" cy="150" r="2" fill="#7b5cff" style="animation-delay:1.4s"/>
-  <circle class="fade" cx="920" cy="160" r="2" fill="#00f5d4" style="animation-delay:2s"/>
-
-  <!-- lock + pulse ring -->
-  <circle class="ring" cx="600" cy="62" r="22" fill="none" stroke="#00f5d4" stroke-width="2"/>
-  <g class="lock" filter="url(#glow)">
-    <path d="M588 58 V50 a12 12 0 0 1 24 0 V58" fill="none" stroke="url(#neon)" stroke-width="5" stroke-linecap="round"/>
-    <rect x="581" y="58" width="38" height="30" rx="6" fill="url(#neon)"/>
-    <circle cx="600" cy="72" r="4" fill="#0b0f1a"/>
-  </g>
-
-  <!-- title -->
-  <text class="title" x="600" y="178" text-anchor="middle" fill="url(#neon)" filter="url(#glow)">PulseVault</text>
-  <text class="tag" x="600" y="212" text-anchor="middle">YOUR DIGITAL WILL · ON-CHAIN · TRUSTLESS</text>
-
-  <!-- heartbeat line -->
-  <path class="beat" filter="url(#glow)" fill="none" stroke="url(#neon)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"
-        d="M0 270 H250 L275 270 L295 232 L320 305 L345 205 L372 285 L392 270 H800 L825 270 L845 238 L870 302 L895 212 L920 284 L940 270 H1200"/>
-</svg>
-
+[README (2).md](https://github.com/user-attachments/files/33192967/README.2.md)
 <div align="center">
 
-<img src="./assets/pulsevault-banner.svg" alt="PulseVault" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,20,24&height=260&section=header&text=PulseVault&fontSize=80&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Your+Digital+Will+on+the+Blockchain&descSize=22&descAlignY=60" width="100%" alt="PulseVault header"/>
 
-<a href="https://git.io/typing-svg">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1000&color=00F5D4&center=true&vCenter=true&width=760&lines=Check+in.+Stay+locked.;Go+silent.+Guardians+vote.;Keys+go+only+to+your+beneficiary.;Your+legacy+never+gets+lost." alt="Typing SVG" />
+<a href="https://github.com/tarunt-07/PulseVault">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1000&color=00F5D4&center=true&vCenter=true&width=760&lines=Check+in.+Stay+locked.;Go+silent.+Guardians+vote.;Keys+go+only+to+your+beneficiary.;Your+legacy+never+gets+lost." alt="Typing animation" />
 </a>
 
 <br/>
@@ -111,7 +47,7 @@ No lawyers. No middlemen. No single point of failure. Just code that keeps its p
 
 ---
 
-## ⚙️ How It Works
+## ⚡ How It Works
 
 | Step | Who | What happens |
 |:---:|:---|:---|
@@ -119,7 +55,7 @@ No lawyers. No middlemen. No single point of failure. Just code that keeps its p
 | **2** | 🧑 Owner | Picks a **beneficiary**, **guardians**, a **vote threshold** and a **check-in interval** |
 | **3** | 🧑 Owner | Calls `checkIn()` regularly, and each check-in **resets the timer** |
 | **4** | ⏰ Contract | Timer expires, and the vault enters the **Expired** state |
-| **5** | 🛡️ Guardians | Vote to confirm the owner's passing, and any owner check-in cancels the process |
+| **5** | 🛡 Guardians | Vote to confirm the owner's passing, and any owner check-in cancels the process |
 | **6** | 🎁 Beneficiary | Threshold reached, so they **claim the key** and decrypt the files |
 
 ### 🔄 Vault lifecycle
@@ -129,7 +65,7 @@ stateDiagram-v2
     [*] --> Active: create vault
     Active --> Active: owner checks in
     Active --> Expired: timer runs out
-    Expired --> Active: owner checks in (false alarm)
+    Expired --> Active: owner checks in, false alarm
     Expired --> Voting: grace period over
     Voting --> Active: owner checks in
     Voting --> Released: guardian threshold reached
@@ -148,17 +84,17 @@ sequenceDiagram
     actor B as Beneficiary
 
     O->>A: Upload files
-    A->>A: Encrypt in browser (AES-256-GCM)
+    A->>A: Encrypt in browser with AES-256-GCM
     A->>I: Store ciphertext
     A->>S: Register vault, guardians, interval, wrapped key
     loop Every interval
-        O->>S: checkIn()
+        O->>S: checkIn
     end
     Note over S: Timer expires
-    G->>S: castVote(confirm)
+    G->>S: castVote confirm
     Note over S: Threshold reached
-    B->>S: claim()
-    S-->>B: Wrapped key + IPFS CID
+    B->>S: claim
+    S-->>B: Wrapped key and IPFS CID
     B->>I: Fetch ciphertext
     B->>B: Unwrap key and decrypt
 ```
@@ -168,17 +104,17 @@ sequenceDiagram
 ## ✨ Features
 
 - 💓 **Dead man's switch**: configurable check-in interval enforced by the smart contract
-- 🛡️ **Guardian consensus**: M-of-N voting so no single person can trigger a release
+- 🛡 **Guardian consensus**: M-of-N voting so no single person can trigger a release
 - 🎯 **Beneficiary-only release**: only the chosen address can claim the key
 - 🔒 **Client-side encryption**: plaintext never leaves your browser
 - 🌐 **Decentralized storage**: encrypted files live on IPFS, not on our servers
-- ⏱️ **Grace period**: a buffer after expiry that protects against accidental triggers
-- ↩️ **Owner override**: checking in at any point before release cancels the vote
+- ⏱ **Grace period**: a buffer after expiry that protects against accidental triggers
+- ↩ **Owner override**: checking in at any point before release cancels the vote
 - 📜 **Transparent and auditable**: every check-in, vote and release is an on-chain event
 
 ---
 
-## 🏗️ Architecture
+## 🧱 Architecture
 
 ```text
 ┌──────────────┐    encrypt     ┌──────────────┐   ciphertext   ┌─────────┐
@@ -191,7 +127,7 @@ sequenceDiagram
 │       PulseVault Smart Contract (EVM)       │
 │  checkIn · vote · threshold · release logic │
 └──────┬───────────────────────────┬──────────┘
-       │ events                    │ claim()
+       │ events                    │ claim
        ▼                           ▼
 ┌──────────────┐            ┌──────────────┐
 │  Guardians   │            │ Beneficiary  │
@@ -202,9 +138,9 @@ sequenceDiagram
 
 - The file key is **never stored in plaintext on-chain**. It is wrapped (encrypted) with the **beneficiary's public key**, and the contract only controls *when* the wrapped key becomes claimable.
 - Guardians **never see the key or the files**. They only vote.
-- Voting needs a **threshold of guardians** and the owner can cancel by checking in.
+- Voting needs a **threshold of guardians**, and the owner can cancel by checking in.
 
-> ⚠️ **Disclaimer:** PulseVault is an academic prototype built for learning. It is **unaudited**, so use **testnets only** and do not store real funds or sensitive secrets.
+> **Disclaimer:** PulseVault is an academic prototype built for learning. It is **unaudited**, so use **testnets only** and do not store real funds or sensitive secrets.
 
 ---
 
@@ -218,7 +154,7 @@ sequenceDiagram
 | 🔐 Encryption | Web Crypto API (AES-256-GCM), ECIES key wrapping |
 | 📦 Storage | IPFS (Pinata) |
 | 🧪 Testing | Hardhat, Chai, Mocha |
-| ⛓️ Network | Ethereum Sepolia Testnet |
+| ⛓ Network | Ethereum Sepolia Testnet |
 
 ---
 
@@ -232,7 +168,6 @@ PulseVault/
 ├── scripts/            # Deploy and utility scripts
 ├── frontend/           # React + Vite dApp
 ├── docs/               # Diagrams, reports, slides
-├── assets/             # Banner and images
 ├── hardhat.config.js
 ├── .env.example
 └── README.md
@@ -242,13 +177,13 @@ PulseVault/
 
 ## 🚀 Getting Started
 
-> 🛠️ The project is under active development. Commands below show the planned setup and may change.
+> The project is under active development. The commands below show the planned setup and may change.
 
 ### Prerequisites
 
 - Node.js 18+
 - MetaMask wallet with Sepolia test ETH
-- Pinata account (IPFS)
+- Pinata account for IPFS
 
 ### Installation
 
@@ -280,7 +215,7 @@ cd frontend && npm run dev
 
 | Function | Caller | Purpose |
 |:---|:---|:---|
-| `createVault(...)` | Owner | Set beneficiary, guardians, threshold, interval and the wrapped key and CID |
+| `createVault(...)` | Owner | Set beneficiary, guardians, threshold, interval, wrapped key and CID |
 | `checkIn()` | Owner | Prove you're alive and reset the timer |
 | `startVoting()` | Anyone | Open voting once the timer and grace period have passed |
 | `castVote(bool)` | Guardian | Confirm or reject the owner's passing |
@@ -288,19 +223,19 @@ cd frontend && npm run dev
 
 ---
 
-## 🗺️ Roadmap
+## 🧭 Roadmap
 
-- [ ] 📐 Finalize architecture and contract design
-- [ ] 📜 Smart contract: vault creation and check-in timer
-- [ ] 🛡️ Smart contract: guardian voting and threshold logic
-- [ ] 🎁 Smart contract: beneficiary claim and release
-- [ ] 🧪 Full test suite with edge cases
-- [ ] 🔐 Client-side encryption and key wrapping
-- [ ] 📦 IPFS upload and retrieval
-- [ ] 🌐 Frontend dashboard for owner, guardian and beneficiary
-- [ ] 🔔 Check-in reminders (email or Telegram)
-- [ ] 🚀 Sepolia deployment and demo
-- [ ] 📝 Project report and presentation
+- [ ] Finalize architecture and contract design
+- [ ] Smart contract: vault creation and check-in timer
+- [ ] Smart contract: guardian voting and threshold logic
+- [ ] Smart contract: beneficiary claim and release
+- [ ] Full test suite with edge cases
+- [ ] Client-side encryption and key wrapping
+- [ ] IPFS upload and retrieval
+- [ ] Frontend dashboard for owner, guardian and beneficiary
+- [ ] Check-in reminders by email or Telegram
+- [ ] Sepolia deployment and demo
+- [ ] Project report and presentation
 
 ---
 
@@ -308,17 +243,17 @@ cd frontend && npm run dev
 
 | Name | Registration No. | GitHub |
 |:---|:---:|:---|
-| `Your Name` | 25BCE5485 | [@username](https://github.com/username) |
-| `Teammate 2` | 25BCE5627 | [@username](https://github.com/username) |
-| `Teammate 3` | 25BCE5705 | [@username](https://github.com/username) |
+| Your Name | 25BCE5485 | [@tarunt-07](https://github.com/tarunt-07) |
+| Teammate 2 | 25BCE5627 | [@username](https://github.com/username) |
+| Teammate 3 | 25BCE5705 | [@username](https://github.com/username) |
 
-🎓 Built at **VIT Chennai**, B.Tech Computer Science and Engineering.
+Built at **VIT Chennai**, B.Tech Computer Science and Engineering.
 
 ---
 
 ## 🤝 Contributing
 
-Ideas, issues and PRs are welcome. Fork the repo, create a branch (`feat/your-feature`), commit using [Conventional Commits](https://www.conventionalcommits.org/) and open a pull request.
+Ideas, issues and PRs are welcome. Fork the repo, create a branch such as `feat/your-feature`, commit using [Conventional Commits](https://www.conventionalcommits.org/) and open a pull request.
 
 ## 📄 License
 
