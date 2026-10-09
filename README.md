@@ -243,9 +243,9 @@ cd frontend && npm run dev
 
 | Name | Registration No. | GitHub |
 |:---|:---:|:---|
-| Your Name | 25BCE5485 | [@tarunt-07](https://github.com/tarunt-07) |
-| Teammate 2 | 25BCE5627 | [@username](https://github.com/username) |
-| Teammate 3 | 25BCE5705 | [@username](https://github.com/username) |
+| Tarunkumar.T | 25BCE5705 | [@tarunt-07](https://github.com/tarunt-07) |
+| vishwasainath | 25BCE5627 | [@viswasainath](https://github.com/username) |
+| Rakshitha | 25BCE5485 | [@rakshithaarvind2007-cpu](https://github.com/username) |
 
 Built at **VIT Chennai**, B.Tech Computer Science and Engineering.
 
