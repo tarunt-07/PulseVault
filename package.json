@@ -1,0 +1,23 @@
+{
+  "name": "pulsevault",
+  "version": "1.0.0",
+  "description": "Decentralized digital will prototype",
+  "private": true,
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "node": "hardhat node",
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia",
+    "frontend": "npm --prefix frontend run dev",
+    "test:frontend": "npm --prefix frontend test"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.1",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "dotenv": "^18.0.6",
+    "hardhat": "^2.29.1",
+    "hardhat-gas-reporter": "^1.0.10",
+    "solidity-coverage": "^0.8.14"
+  }
+}

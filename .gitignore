@@ -147,3 +147,15 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Hardhat
+artifacts/
+cache/
+typechain-types/
+
+# Vite build output
+frontend/dist/
+
+# Local frontend environment
+frontend/.env
+frontend/.env.local
