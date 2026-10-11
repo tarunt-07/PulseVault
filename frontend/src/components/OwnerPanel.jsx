@@ -3,7 +3,18 @@ import { getContract, parseVault, ethers } from "../lib/contract.js";
 import { deriveKeyPair } from "../lib/keys.js";
 import { generateFileKey, encryptFile, buildGuardianShares } from "../lib/crypto.js";
 import { uploadToIpfs } from "../lib/ipfs.js";
-import { StatusPill, Notice, Field } from "./ui.jsx";
+import { toast } from "../lib/toast.js";
+import {
+  Icon,
+  Button,
+  Notice,
+  Field,
+  MonoField,
+  StatusBadge,
+  Stat,
+  Stepper,
+  useCountdown,
+} from "./ui.jsx";
 
 function parseList(text) {
   return text
@@ -12,7 +23,7 @@ function parseList(text) {
     .filter(Boolean);
 }
 
-export default function OwnerPanel({ signer, account }) {
+export default function OwnerPanel({ signer, account, onConnect }) {
   const [beneficiary, setBeneficiary] = useState("");
   const [guardiansText, setGuardiansText] = useState("");
   const [threshold, setThreshold] = useState(2);
@@ -20,29 +31,36 @@ export default function OwnerPanel({ signer, account }) {
   const [graceMin, setGraceMin] = useState(5);
   const [file, setFile] = useState(null);
   const [vault, setVault] = useState(null);
-  const [busy, setBusy] = useState(false);
+  const [keyRegistered, setKeyRegistered] = useState(false);
+  const [busy, setBusy] = useState("");
   const [error, setError] = useState("");
   const [info, setInfo] = useState("");
 
-  const guard = async (fn) => {
-    setBusy(true);
+  const countdown = useCountdown(vault?.remaining);
+
+  async function guard(name, fn) {
+    setBusy(name);
     setError("");
     setInfo("");
     try {
       await fn();
     } catch (e) {
-      setError(e.shortMessage || e.message || String(e));
+      const msg = e.shortMessage || e.message || String(e);
+      setError(msg);
+      toast(msg, "error");
     } finally {
-      setBusy(false);
+      setBusy("");
     }
-  };
+  }
 
   async function registerKey() {
     const { publicKey } = await deriveKeyPair(signer);
     const contract = getContract(signer);
     const tx = await contract.registerPublicKey(publicKey);
     await tx.wait();
+    setKeyRegistered(true);
     setInfo("Encryption key registered on-chain.");
+    toast("Encryption key registered", "success");
   }
 
   async function createVault() {
@@ -76,7 +94,8 @@ export default function OwnerPanel({ signer, account }) {
       encryptedGuardianShares
     );
     await tx.wait();
-    setInfo("Vault created. A new file key is shared across your guardians.");
+    setInfo("Vault created. The file key is now split across your guardians.");
+    toast("Vault created successfully", "success");
     await loadVault();
   }
 
@@ -100,6 +119,7 @@ export default function OwnerPanel({ signer, account }) {
     const tx = await contract.rekey(cid, shares);
     await tx.wait();
     setInfo("Vault re-keyed with a new file and shares.");
+    toast("Vault re-keyed", "success");
     await loadVault();
   }
 
@@ -107,85 +127,123 @@ export default function OwnerPanel({ signer, account }) {
     const contract = getContract(signer);
     const tx = await contract.checkIn();
     await tx.wait();
-    setInfo("Checked in. Timer reset.");
+    setInfo("Checked in — timer reset.");
+    toast("Checked in. Timer reset.", "success");
     await loadVault();
   }
 
   async function loadVault() {
     const contract = getContract(signer);
     try {
-      const result = await contract.getVault(account);
-      const parsed = parseVault(result);
-      const status = await contract.statusOf(account);
-      const remaining = await contract.secondsUntilExpiry(account);
-      setVault({ ...parsed, status: Number(status), remaining: Number(remaining) });
+      const parsed = parseVault(await contract.getVault(account));
+      const status = Number(await contract.statusOf(account));
+      const remaining = Number(await contract.secondsUntilExpiry(account));
+      setVault({ ...parsed, status, remaining });
     } catch {
       setVault(null);
     }
   }
 
-  if (!signer) return <p className="muted">Connect your wallet to manage a vault.</p>;
+  if (!signer) {
+    return (
+      <div className="panel">
+        <section className="card center">
+          <p className="card-lead">Connect your wallet to create and manage a vault.</p>
+          <Button variant="primary" icon={<Icon.wallet size={17} />} onClick={onConnect}>Connect wallet</Button>
+        </section>
+      </div>
+    );
+  }
+
+  const step = vault ? 2 : keyRegistered ? 1 : 0;
 
   return (
     <div className="panel">
       <Notice error={error} info={info} />
 
       <section className="card">
-        <h3>Vault status</h3>
+        <h3><span className="h3-ico"><Icon.heart size={16} /></span>Vault status</h3>
         {vault ? (
-          <div className="kv">
-            <div><span>Status</span><StatusPill status={vault.status} /></div>
-            <div><span>Round</span><b>{vault.round}</b></div>
-            <div><span>Guardians</span><b>{vault.guardians.length}</b></div>
-            <div><span>Threshold</span><b>{vault.threshold}</b></div>
-            <div><span>Beneficiary</span><code>{vault.beneficiary}</code></div>
-            <div><span>CID</span><code>{vault.cid}</code></div>
-            <div><span>Time left</span><b>{vault.remaining}s</b></div>
-          </div>
+          <>
+            <div className="row" style={{ marginBottom: 16 }}>
+              <StatusBadge status={vault.status} />
+              <span className="chip subtle">round {vault.round}</span>
+            </div>
+            <div className="hero-stats" style={{ marginTop: 0 }}>
+              <Stat icon={<Icon.clock size={20} />} label="Time until expiry" value={countdown.text} />
+              <Stat tone="violet" icon={<Icon.shield size={20} />} label="Guardians" value={`${vault.threshold} of ${vault.guardians.length}`} />
+              <Stat tone="pink" icon={<Icon.vote size={20} />} label="Check-in round" value={vault.round} />
+            </div>
+            <div style={{ display: "grid", gap: 10, marginTop: 16 }}>
+              <MonoField label="Beneficiary" value={vault.beneficiary} />
+              <MonoField label="CID" value={vault.cid} />
+            </div>
+          </>
         ) : (
-          <p className="muted">No vault found for this account.</p>
+          <p className="card-lead">No vault found for this account yet. Follow the steps below to create one.</p>
         )}
         <div className="row">
-          <button className="btn" disabled={busy} onClick={() => guard(loadVault)}>Refresh</button>
-          <button className="btn primary" disabled={busy || !vault} onClick={() => guard(checkIn)}>Check in</button>
+          <Button icon={<Icon.refresh size={16} />} loading={busy === "load"} onClick={() => guard("load", loadVault)}>Refresh</Button>
+          <Button variant="primary" icon={<Icon.heart size={16} />} disabled={!vault} loading={busy === "checkin"} onClick={() => guard("checkin", checkIn)}>Check in</Button>
         </div>
       </section>
 
       <section className="card">
-        <h3>1 · Register encryption key</h3>
-        <p className="muted">Signs a fixed message to derive your client-side key pair. No gas required beyond the one-time registration.</p>
-        <button className="btn" disabled={busy} onClick={() => guard(registerKey)}>Register key</button>
-      </section>
+        <h3><span className="h3-ico"><Icon.spark size={16} /></span>Set up your vault</h3>
+        <Stepper steps={["Register key", "Configure", "Live"]} active={step} />
 
-      <section className="card">
-        <h3>2 · Create a vault</h3>
+        <div style={{ marginBottom: 20 }}>
+          <p className="card-lead" style={{ marginTop: 0 }}>
+            Sign a fixed message to derive your client-side encryption key pair. One-time on-chain registration.
+          </p>
+          <Button
+            variant={keyRegistered ? "ghost" : "primary"}
+            icon={keyRegistered ? <Icon.check size={16} /> : <Icon.lock size={16} />}
+            loading={busy === "key"}
+            onClick={() => guard("key", registerKey)}
+          >
+            {keyRegistered ? "Key registered" : "Register encryption key"}
+          </Button>
+        </div>
+
         <Field label="Beneficiary address">
           <input value={beneficiary} onChange={(e) => setBeneficiary(e.target.value)} placeholder="0x…" />
         </Field>
-        <Field label="Guardian addresses" hint="2–10 addresses, comma or space separated">
-          <textarea rows={3} value={guardiansText} onChange={(e) => setGuardiansText(e.target.value)} placeholder="0xabc… 0xdef…" />
+        <Field label="Guardian addresses" hint="2–10 addresses, comma, space or newline separated">
+          <textarea rows={3} value={guardiansText} onChange={(e) => setGuardiansText(e.target.value)} placeholder="0xabc…  0xdef…" />
         </Field>
         <div className="grid">
           <Field label="Threshold">
             <input type="number" min={2} value={threshold} onChange={(e) => setThreshold(Number(e.target.value))} />
           </Field>
-          <Field label="Interval (minutes)">
+          <Field label="Interval (min)">
             <input type="number" min={1} value={intervalMin} onChange={(e) => setIntervalMin(Number(e.target.value))} />
           </Field>
-          <Field label="Grace period (minutes)">
+          <Field label="Grace (min)">
             <input type="number" min={0} value={graceMin} onChange={(e) => setGraceMin(Number(e.target.value))} />
           </Field>
         </div>
         <Field label="File to protect">
           <input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} />
         </Field>
-        <button className="btn primary" disabled={busy} onClick={() => guard(createVault)}>Encrypt & create vault</button>
+        {file && (
+          <p className="muted" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <Icon.file size={15} /> {file.name} · {(file.size / 1024).toFixed(1)} KB
+          </p>
+        )}
+        <div className="row">
+          <Button variant="primary" icon={<Icon.upload size={16} />} loading={busy === "create"} onClick={() => guard("create", createVault)}>
+            Encrypt & create vault
+          </Button>
+        </div>
       </section>
 
       <section className="card">
-        <h3>3 · Update file (re-key)</h3>
-        <p className="muted">Re-encrypts the currently selected file for the existing guardians and resets votes.</p>
-        <button className="btn" disabled={busy || !vault || !file} onClick={() => guard(rekey)}>Re-key vault</button>
+        <h3><span className="h3-ico"><Icon.lock size={16} /></span>Update file</h3>
+        <p className="card-lead">Re-encrypt the selected file for the existing guardians and reset the voting round.</p>
+        <Button icon={<Icon.refresh size={16} />} disabled={!vault || !file} loading={busy === "rekey"} onClick={() => guard("rekey", rekey)}>
+          Re-key vault
+        </Button>
       </section>
     </div>
   );
