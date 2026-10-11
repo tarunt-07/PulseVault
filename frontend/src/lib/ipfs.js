@@ -51,6 +51,9 @@ export async function fetchFromIpfs(cidOrUri) {
     if (!stored) throw new Error("local encrypted blob not found in this browser");
     return fromBase64(stored);
   }
+  if (cidOrUri.startsWith("data:")) {
+    return fromBase64(cidOrUri.slice(cidOrUri.indexOf(",") + 1));
+  }
   const cid = cidOrUri.replace(/^ipfs:\/\//, "");
   const res = await fetch(`${GATEWAY}/${cid}`);
   if (!res.ok) throw new Error(`IPFS fetch failed: ${res.status}`);
@@ -58,6 +61,6 @@ export async function fetchFromIpfs(cidOrUri) {
 }
 
 export function ipfsWebUrl(cidOrUri) {
-  if (cidOrUri.startsWith("local://")) return cidOrUri;
+  if (cidOrUri.startsWith("local://") || cidOrUri.startsWith("data:")) return cidOrUri;
   return `${GATEWAY}/${cidOrUri.replace(/^ipfs:\/\//, "")}`;
 }
