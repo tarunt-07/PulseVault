@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {console} from "hardhat/console.sol";
-
 contract PulseVault {
     enum Status { None, Active, Grace, Voting, Released }
 
@@ -110,7 +108,6 @@ contract PulseVault {
         Vault storage vault = vaults[msg.sender];
         if (vault.beneficiary == address(0)) revert VaultNotFound();
         if (vault.released) revert AlreadyReleased();
-        if (msg.sender != msg.sender) revert NotOwner(); // placeholder, msg.sender is owner
 
         vault.lastCheckIn = uint64(block.timestamp);
         vault.round++;
