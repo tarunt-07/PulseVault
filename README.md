@@ -180,13 +180,14 @@ PulseVault/
 │   ├── vite.config.js
 │   └── src/
 │       ├── App.jsx
-│       ├── components/         # Owner / Guardian / Beneficiary panels
+│       ├── components/         # Owner / Guardian / Beneficiary panels + UI kit
 │       └── lib/
 │           ├── crypto.js       # AES-GCM + ECIES + share orchestration
 │           ├── shamir.js       # Shamir Secret Sharing over GF(256)
 │           ├── keys.js         # Wallet-signature key derivation
 │           ├── ipfs.js         # Pinata upload/fetch (+ localStorage)
 │           ├── contract.js     # ethers bindings
+│           ├── toast.js        # toast notification bus
 │           └── abi.js          # ABI + status constants
 ├── docs/
 │   ├── architecture.md
@@ -201,59 +202,112 @@ PulseVault/
 
 ## 🚀 Getting Started
 
-### Prerequisites
+Everything runs locally: a Hardhat development chain, the smart contract, and the React app. Follow the steps below in order.
 
-- Node.js 18+
-- MetaMask (or another EIP-1193 wallet)
-- Optional: a Pinata account for real IPFS pinning (without it, encrypted blobs are kept in browser localStorage for single-device demos)
+### ✅ Prerequisites
 
-### Installation
+| Tool | Version | Notes |
+|:---|:---|:---|
+| **Node.js** | 18 or newer (20+ recommended) | ships with `npm` |
+| **Git** | any | to clone the repo |
+| **MetaMask** | latest | browser extension (or another EIP-1193 wallet) |
+
+Optional: a [Pinata](https://www.pinata.cloud/) account for real IPFS pinning. Without it, encrypted blobs are stored in the browser's `localStorage`, which is enough for a single-device demo.
+
+### 📦 Install the web app
+
+#### 1 · Clone the repository
 
 ```bash
-# 1. Clone the repo
 git clone https://github.com/tarunt-07/PulseVault.git
 cd PulseVault
+```
 
-# 2. Install root + frontend dependencies
+#### 2 · Install dependencies
+
+```bash
+# root: Hardhat build tooling
 npm install
-cd frontend && npm install && cd ..
 
-# 3. Configure environment
-cp .env.example .env                     # SEPOLIA_RPC_URL, PRIVATE_KEY, ETHERSCAN_API_KEY
-cp frontend/.env.example frontend/.env   # VITE_CONTRACT_ADDRESS, VITE_PINATA_JWT
+# frontend: React + Vite + crypto libs
+cd frontend
+npm install
+cd ..
 ```
 
-### Compile, test and deploy
+#### 3 · Create the environment files
 
 ```bash
-npx hardhat compile
-npx hardhat test
-
-# local demo
-npx hardhat node                                   # terminal A
-npx hardhat run scripts/deploy.js --network localhost   # terminal B
-
-# or Sepolia
-npx hardhat run scripts/deploy.js --network sepolia
+cp .env.example .env                      # optional — only needed for Sepolia
+cp frontend/.env.example frontend/.env     # required — set VITE_CONTRACT_ADDRESS
 ```
 
-Copy the printed address into `frontend/.env` as `VITE_CONTRACT_ADDRESS`.
+`frontend/.env` looks like this (the address is filled in at step 5):
 
-### Run the frontend
+```dotenv
+VITE_CONTRACT_ADDRESS=
+VITE_PINATA_JWT=
+VITE_IPFS_GATEWAY=https://gateway.pinata.cloud/ipfs
+```
+
+#### 4 · Start a local blockchain and deploy
 
 ```bash
-cd frontend && npm run dev
+# Terminal A — keep this running
+npx hardhat node
+
+# Terminal B — deploy the contract to the local chain
+npx hardhat run scripts/deploy.js --network localhost
 ```
 
-Open http://localhost:5173. The app has three tabs — **Owner**, **Guardian**
-and **Beneficiary**. Full walkthrough in [`docs/deployment.md`](./docs/deployment.md).
+The deploy script prints something like `PulseVault deployed to: 0x5FbD…aa3`.
 
-### Testing
+#### 5 · Point the frontend at the contract
+
+Copy the printed address into `frontend/.env`:
+
+```dotenv
+VITE_CONTRACT_ADDRESS=0xYourDeployedAddress
+```
+
+#### 6 · Start the frontend
+
+```bash
+cd frontend
+npm run dev
+```
+
+Open **http://localhost:5173** in your browser.
+
+#### 7 · Connect MetaMask to the local chain
+
+1. Open MetaMask → **Add a network manually**:
+   - **Network name:** `Hardhat Localhost`
+   - **RPC URL:** `http://127.0.0.1:8545`
+   - **Chain ID:** `31337`
+   - **Currency symbol:** `ETH`
+2. **Import a test account**: from the `npx hardhat node` output, copy an account's `Private Key` (Account #0, #1, …) into MetaMask → *Import account*.
+3. In the app click **Connect wallet**. The status chip turns green once you're on chain `31337`.
+
+You're ready: register an encryption key, create a vault, then try the guardian and beneficiary flows. The dApp has three tabs — **Owner**, **Guardian**, **Beneficiary**.
+
+> **Troubleshooting — MetaMask `-32002` "request already pending":** a previous connect popup is still open. Open the MetaMask extension and approve or dismiss it, then click **Connect wallet** again. As a last resort, remove `http://localhost:5173` under *Settings → Connected sites* and refresh.
+
+### 🧪 Testing
 
 ```bash
 npx hardhat test                 # 30 contract tests
 cd frontend && npm test          # 5 crypto round-trip tests
 ```
+
+### 🌐 Deploying to Sepolia (optional)
+
+```bash
+# fill root .env first: SEPOLIA_RPC_URL, PRIVATE_KEY, ETHERSCAN_API_KEY
+npx hardhat run scripts/deploy.js --network sepolia
+```
+
+The contract is automatically verified on Etherscan when `ETHERSCAN_API_KEY` is set, and the printed address goes into `frontend/.env` exactly as in step 5.
 
 ---
 
